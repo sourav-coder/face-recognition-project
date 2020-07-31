@@ -1,5 +1,5 @@
-''
-# loading the libraries ---
+
+# importing  the libraries ---
 import os
 import face_recognition
 import cv2
@@ -34,6 +34,7 @@ for name in files:
 
 
 cap=cv2.VideoCapture(0)
+cap1=cv2.VideoCapture(1)
 
 #  opening ss.txt for writing the exact time of entering
 file1 = open("ss.txt", "w")
@@ -41,86 +42,165 @@ file1 = open("ss.txt", "w")
 
 file2 = open('biden.txt', 'w')
 
+
 process=True
-face_locations=[]
-face_encoding=[]
+# face_locations=[]
+# face_encoding=[]
 i=0
 while 1:
 
-    _,frame=cap.read()
-
-
-    small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
-
-    rgb_small_frame = small_frame[:, :, ::-1]
-    #face_names = []
-
-
-    if process:
-        face_locations = face_recognition.face_locations(rgb_small_frame)
-        face_encodings = face_recognition.face_encodings(rgb_small_frame, face_locations)
-
-        face_names = []
-        for face_encoding in face_encodings:
-            matches = face_recognition.compare_faces(known_faces, face_encoding)
-            name = "Unknown"
-            print(matches)
-
-            face_distances = face_recognition.face_distance(known_faces, face_encoding)
-            best_match_index = np.argmin(face_distances)
-
-            print(known_name[best_match_index])
-
-            if matches[best_match_index]:
-                name = known_name[best_match_index]
-
-
-            face_names.append(name)
-            if name!='Unknown':
-                print(name+'  '+str(datetime.datetime.now())[:19])
-                #a.add(name+'  '+str(datetime.datetime.now())[:19]+'\n')
-                if name == 'ss':
-
-                    file1.write(str(datetime.datetime.now())[:19]+'\n')
-                elif name == 'biden':
-                    file2.write(str(datetime.datetime.now())[:19]+'\n')
+    ret,frame=cap.read()
+    ret1,frame1=cap1.read()
 
 
 
 
-    process = not process
+    if ret:
+
+        small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
+
+        rgb_small_frame = small_frame[:, :, ::-1]
+        # face_names = []
+
+        if process:
+            face_locations = face_recognition.face_locations(rgb_small_frame)
+            face_encodings = face_recognition.face_encodings(rgb_small_frame, face_locations)
+
+            face_names = []
+            for face_encoding in face_encodings:
+                matches = face_recognition.compare_faces(known_faces, face_encoding)
+                name = "Unknown"
+                print(matches)
+
+                face_distances = face_recognition.face_distance(known_faces, face_encoding)
+                best_match_index = np.argmin(face_distances)
+
+                print(known_name[best_match_index])
+
+                if matches[best_match_index]:
+                    name = known_name[best_match_index]
+
+                face_names.append(name)
+                if name != 'Unknown':
+                    print(name + '  ' + str(datetime.datetime.now())[:19])
+                    # a.add(name+'  '+str(datetime.datetime.now())[:19]+'\n')
+                    if name == 'ss':
+
+                        file1.write(str(datetime.datetime.now())[11:19] + '\n')
+                    if name == 'biden':
+                        file2.write(str(datetime.datetime.now())[11:19] + '\n')
+
+        process = not process
+
+        for (top, right, bottom, left), name in zip(face_locations, face_names):
+            top *= 4
+            right *= 4
+            bottom *= 4
+            left *= 4
+
+            cv2.rectangle(frame, (left, top), (right, bottom), (119, 155, 0), 2)
+
+            cv2.rectangle(frame, (left, bottom - 30), (right, bottom), (130, 0, 75), cv2.FILLED)
+            font = cv2.FONT_HERSHEY_TRIPLEX
+            cv2.putText(frame, name, (left + 6, bottom - 6), font, 0.9, (255, 255, 255), 1)
+
+            if name == 'Unknown' and i % 5 == 0:
+                j = 'Unknown/' + str(i) + '_faces' + '.jpg'
+
+                cv2.imwrite(j, frame)
+
+            i += 1
+
+        cv2.imshow('video', frame)
+
+        # cv2.imwrite('Unknown/'+'faces.jpg',frame)
+
+        # if cv2.waitKey(1) & 0xFF == ord('q'):
+        #     break
 
 
 
-    for (top, right, bottom, left), name in zip(face_locations, face_names):
-        top *= 4
-        right *= 4
-        bottom *= 4
-        left *= 4
 
-        cv2.rectangle(frame, (left, top), (right, bottom), (119, 155, 0), 2)
+        print('Camera 2 started ')
+        small_frame = cv2.resize(frame1, (0, 0), fx=0.25, fy=0.25)
 
-        cv2.rectangle(frame, (left, bottom - 30), (right, bottom), (130, 0, 75),cv2.FILLED)
-        font = cv2.FONT_HERSHEY_TRIPLEX
-        cv2.putText(frame, name, (left + 6, bottom - 6), font, 0.9, (255, 255, 255), 1)
+        rgb_small_frame = small_frame[:, :, ::-1]
+        #face_names = []
+        if process:
+            face_locations = face_recognition.face_locations(rgb_small_frame)
+            face_encodings = face_recognition.face_encodings(rgb_small_frame, face_locations)
 
-        if name=='Unknown'  and i%5==0:
-            j='Unknown/' + str(i)+'_faces'+'.jpg'
+            face_names = []
+            for face_encoding in face_encodings:
+                matches = face_recognition.compare_faces(known_faces, face_encoding)
+                name = "Unknown"
 
-            cv2.imwrite(j,frame)
+                print('Camera 2',matches)
 
-        i+=1
+                face_distances = face_recognition.face_distance(known_faces, face_encoding)
+                best_match_index = np.argmin(face_distances)
 
-    cv2.imshow('video',frame)
+                print('Camera 2',known_name[best_match_index])
+
+                if matches[best_match_index]:
+                    name = known_name[best_match_index]
 
 
-    #cv2.imwrite('Unknown/'+'faces.jpg',frame)
+                face_names.append(name)
+                if name!='Unknown':
 
-    if cv2.waitKey(1) & 0xFF==ord('q'):
-        break
+                    print(name+'  '+str(datetime.datetime.now())[:19])
+                    print(str(datetime.datetime.now()))
+                    #a.add(name+'  '+str(datetime.datetime.now())[:19]+'\n')
+                    if name == 'ss':
+                        file1.write(str(datetime.datetime.now())[11:19] + '\n')
+
+
+
+
+
+                    if name == 'biden':
+                        file2.write(str(datetime.datetime.now())[11:19] + '\n')
+
+
+
+
+        # process = not process
+
+
+
+
+
+        for (top, right, bottom, left), name in zip(face_locations, face_names):
+            top *= 4
+            right *= 4
+            bottom *= 4
+            left *= 4
+
+            cv2.rectangle(frame1, (left, top), (right, bottom), (119, 155, 0), 2)
+
+            cv2.rectangle(frame1, (left, bottom - 30), (right, bottom), (130, 0, 75),cv2.FILLED)
+            font = cv2.FONT_HERSHEY_TRIPLEX
+            cv2.putText(frame1, name, (left + 6, bottom - 6), font, 0.9, (255, 255, 255), 1)
+
+            if name=='Unknown'  and i%5==0:
+                j='Unknown/' + str(i)+'_faces'+'.jpg'
+
+                cv2.imwrite(j,frame1)
+
+            i+=1
+
+        cv2.imshow('video2',frame1)
+
+
+        #cv2.imwrite('Unknown/'+'faces.jpg',frame)
+
+        if cv2.waitKey(1) & 0xFF==ord('q'):
+            break
 
 
 cap.release()
+cap1.release()
 
 #file1.writelines(a)
 
