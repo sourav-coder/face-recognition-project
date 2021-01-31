@@ -1,0 +1,10 @@
+os
+face_recognition
+cv2
+numpy
+datetime
+pymongo 
+imagehash
+PIL
+shortuuid
+pyrebase
