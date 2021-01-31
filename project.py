@@ -11,8 +11,8 @@ from PIL import  Image
 import shortuuid
 import pyrebase
 
-
-client = MongoClient("mongodb+srv://rupam-admin:RUPAM9064869734@cluster0.gemmv.mongodb.net/thirdeyeSpyDB?retryWrites=true&w=majority")
+mongoUrl = open('./hide.txt','r')
+client = MongoClient(mongoUrl.read())
 db = client.get_database("thirdeyeSpyDB")
 records = db.takendatas
 recordsGiven = db.givendatas

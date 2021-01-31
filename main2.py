@@ -15,7 +15,8 @@ import numpy as np
 import datetime
 from pymongo import MongoClient
 
-client = MongoClient("mongodb+srv://rupam-admin:RUPAM9064869734@cluster0.gemmv.mongodb.net/thirdeyeSpyDB?retryWrites=true&w=majority")
+mongoUrl = open('./hide.txt','r')
+client = MongoClient(mongoUrl.read())
 db = client.get_database("thirdeyeSpyDB")
 records = db.takendatas
 recordsGiven = db.givendatas
