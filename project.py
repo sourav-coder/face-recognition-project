@@ -4,15 +4,21 @@ import face_recognition
 import cv2
 import numpy as np
 import datetime
-from SSIM_PIL import compare_ssim
+# from SSIM_PIL import compare_ssim
 from pymongo import MongoClient
 import imagehash
 from PIL import  Image
 import shortuuid
 import pyrebase
 
-mongoUrl = open('./hide.txt','r')
-client = MongoClient(mongoUrl.read())
+# mongoUrl = open('./hide.txt','r')
+# client = MongoClient(mongoUrl.read())
+# db = client.get_database("thirdeyeSpyDB")
+# records = db.takendatas
+# recordsGiven = db.givendatas
+# unknown = db.unknowns
+client = MongoClient(
+    "mongodb+srv://rupam-admin:SOVON9064869734MONGODB@cluster0.gemmv.mongodb.net/thirdeyeSpyDB?retryWrites=true&w=majority")
 db = client.get_database("thirdeyeSpyDB")
 records = db.takendatas
 recordsGiven = db.givendatas
@@ -64,6 +70,7 @@ def uploadImage():
 
 
 # loading the files of the directory ---
+# -------------------------------------  MAIN SERVER ---------------------------------------
 
 files = []
 for dir, dirname, filename in os.walk('image'):
@@ -89,7 +96,7 @@ cap = cv2.VideoCapture('samples_video/withMask1.mp4')
 # cap = cv2.VideoCapture(1)
 
 # cap1 = cv2.VideoCapture(1)
-cap.set(cv2.CAP_PROP_BUFFERSIZE, 3)
+cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
 
 #  opening ss.txt for writing the exact time of entering
 file1 = open("ss.txt", "w")
@@ -107,11 +114,11 @@ j = 0
 k = 0
 hash1=''
 
-while 1:
+while cap.isOpened():
 
     ret, frame = cap.read()
     # ret1,frame1=cap1.read()
-    frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+    # frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
 
     if ret:
 
@@ -184,7 +191,6 @@ while 1:
                 face_names.append(name)
                 if name != 'Unknown':
                     print(name + '  ' + str(datetime.datetime.now())[:19])
-                    # a.add(name+'  '+str(datetime.datetime.now())[:19]+'\n')
                     if name == 'ss' and j % 5 == 0:
                         file1.write(str(datetime.datetime.now())[11:19] + '\n')
                         j += 1
@@ -209,7 +215,7 @@ while 1:
 
             mouth_reacts = mouth.detectMultiScale(frame[top:top + right, left:left + right], 1.1, 3)
             if name == 'Unknown' and i % 5 == 0:
-                j = 'Unknown/' + str(i) + '_faces' + '.jpg'
+                # j = 'Unknown/test/' + str(i) + '_faces' + '.jpg'
 
                 print("length of mouth array",mouth_reacts)
                 if len(mouth_reacts)==0:
@@ -219,10 +225,11 @@ while 1:
 
         # small_frame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
         cv2.imshow('video',frame )
+        cv2.waitKey(10)
 
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            uploadImage()
-            break
+    else:
+        uploadImage()
+        break
 
 cap.release()
 # cap1.release()

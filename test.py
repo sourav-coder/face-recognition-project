@@ -48,32 +48,32 @@
 
 
 
-import imagehash
-from PIL import  Image
-
-img1=Image.open(r"Unknown/test/5 new_faces.jpg")
-img2=Image.open(r"Unknown/test/20 new_faces.jpg")
-
-hash0 = imagehash.average_hash(img1)
-hash1 = imagehash.average_hash(img2)
-
- # check width of the images are equal or not
-if img1.width<img2.width:
-    img2=img2.resize((img1.width,img1.height))
-else:
-    img1=img1.resize((img2.width,img2.height))
-
-from SSIM_PIL import compare_ssim
-
-value = compare_ssim(img1, img2)
-print(value)
-
-cutoff = 5
-
-if hash0 - hash1 < cutoff :
-    print('images are similar')
-else:
-    print('images are not similar')
+# import imagehash
+# from PIL import  Image
+#
+# img1=Image.open(r"Unknown/test/5 new_faces.jpg")
+# img2=Image.open(r"Unknown/test/20 new_faces.jpg")
+#
+# hash0 = imagehash.average_hash(img1)
+# hash1 = imagehash.average_hash(img2)
+#
+#  # check width of the images are equal or not
+# if img1.width<img2.width:
+#     img2=img2.resize((img1.width,img1.height))
+# else:
+#     img1=img1.resize((img2.width,img2.height))
+#
+# from SSIM_PIL import compare_ssim
+#
+# value = compare_ssim(img1, img2)
+# print(value)
+#
+# cutoff = 5
+#
+# if hash0 - hash1 < cutoff :
+#     print('images are similar')
+# else:
+#     print('images are not similar')
 
 
 
@@ -129,7 +129,34 @@ else:
 #             break
 #     else:
 #         cv2.imwrite('Unknown/test/' + str(i)+' maybe_new_faces' + '.jpg',img)
-
-
-
+#
+#
+#
 # cv2.destroyAllWindows()
+
+# fetch livestream video
+import cv2
+import  pyrebase
+import os
+print(os.listdir("./Unknown"))
+import datetime
+print(str(datetime.datetime.now())[:19].replace(":","/").replace(" ","-Time-"))
+
+# cap=cv2.VideoCapture(0)
+# cap1=cv2.VideoCapture(2)
+cap = cv2.VideoCapture('samples_video/withMask1.mp4')
+
+while cap.isOpened():
+    ret,frame=cap.read()
+    # ret1,frame1=cap1.read()
+    print(frame)
+    cv2.imshow('frame',frame)
+    # cv2.imshow("droid cam",frame1)
+
+    if cv2.waitKey(1) & 0xFF==ord('q'):
+        break
+cap.release()
+cv2.destroyAllWindows()
+
+
+

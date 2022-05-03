@@ -15,11 +15,11 @@ import numpy as np
 import datetime
 from pymongo import MongoClient
 
-mongoUrl = open('./hide.txt','r')
-client = MongoClient(mongoUrl.read())
-db = client.get_database("thirdeyeSpyDB")
-records = db.takendatas
-recordsGiven = db.givendatas
+# mongoUrl = open('./hide.txt','r')
+# client = MongoClient(mongoUrl.read())
+# db = client.get_database("thirdeyeSpyDB")
+# records = db.takendatas
+# recordsGiven = db.givendatas
 
 
 def faceRecognition():
@@ -206,7 +206,7 @@ def faceRecognition():
         # cv2.imwrite('Unknown/'+'faces.jpg',frame)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
-            algo()
+            # algo()
             break
 
 
